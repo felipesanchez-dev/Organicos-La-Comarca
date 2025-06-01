@@ -132,7 +132,7 @@ const newsletters = () => {
           )
         }
       </Contact>
-      <Picture
+      <!-- <Picture
         slot="image"
         src={contact.data.form.thumbnail}
         alt={`contact`}
@@ -149,13 +149,13 @@ const newsletters = () => {
             breakpoints: [500, 601, 768, 820, 962, 1280, 1440, 1536, 1920],
           },
         ]}
-      />
+      /> -->
     </Dialog>
 
     {
       newsletters().map((item) => (
         <Dialog link={item.link} type="newsletter" client:idle>
-          <Newsletter client:visible slot="content" data={item} />
+          {/* <Newsletter client:visible slot="content" data={item} /> */}
 
           <Picture
             slot="image"
@@ -183,7 +183,7 @@ const newsletters = () => {
       <div slot="content">
         <Auth client:visible />
       </div>
-      <Picture
+      <!-- <Picture
         slot="image"
         src={contact.data.auth.thumbnail}
         alt={`Auth`}
@@ -200,7 +200,7 @@ const newsletters = () => {
             breakpoints: [500, 601, 768, 820, 962],
           },
         ]}
-      />
+      /> -->
     </Dialog>
   </body>
 </html>
