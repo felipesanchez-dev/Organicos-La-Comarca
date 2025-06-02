@@ -17,8 +17,7 @@ let {
 } = Astro.props;
 
 const allImages = import.meta.glob("/src/assets/*.{jpeg,jpg,png,gif}");
-const mod = await allImages[src]() as { default: any };
-const imgObj = mod.default;
+const imgObj = (await allImages[src]()).default;
 if (aspect) height = Math.round(width / aspect);
 const image = await getImage({
   src: imgObj,
