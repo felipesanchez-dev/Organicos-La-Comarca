@@ -16,9 +16,9 @@ const renderedContent = marked.parse(content);
 if (newsletter) {
   const contact = await getEntry("config", "contact");
 
-  newsletterItem = contact.data.newsletter.list
-    .filter((list) => list.link === newsletter)
-    .pop();
+  newsletterItem = contact.data.newsletter?.list
+    ?.filter((list) => list.link === newsletter)
+    ?.pop();
 }
 ---
 

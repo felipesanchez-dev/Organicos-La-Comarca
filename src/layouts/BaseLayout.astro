@@ -1,7 +1,6 @@
 ---
 import { getEntry } from "astro:content";
 import { t } from "@util/translate";
-import { Icon } from "astro-icon/components";
 import { marked } from "marked";
 import Picture from "@components/media/Picture.astro";
 import BaseHead from "@components/BaseHead.astro";
@@ -9,7 +8,6 @@ import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import Contact from "@components/form/Contact.vue";
 import Dialog from "@components/dialog/Dialog.vue";
-import Newsletter from "@components/form/Newsletter.vue";
 import Auth from "@components/form/Auth.vue";
 import Init from "@components/common/Init.vue";
 import "@fontsource-variable/dm-sans";
@@ -132,30 +130,12 @@ const newsletters = () => {
           )
         }
       </Contact>
-      <!-- <Picture
-        slot="image"
-        src={contact.data.form.thumbnail}
-        alt={`contact`}
-        sizes="(max-width: 768px) calc(100vw - 4rem), (min-width: 1024px) 440px, calc(40vw - 4rem)"
-        aspect={1}
-        layout="fill"
-        loading="lazy"
-        artDirectives={[
-          {
-            media: "(max-width: 768px)",
-            aspect: 21 / 9,
-            src: contact.data.form.thumbnail,
-            layout: "constrained",
-            breakpoints: [500, 601, 768, 820, 962, 1280, 1440, 1536, 1920],
-          },
-        ]}
-      /> -->
+      
     </Dialog>
 
     {
       newsletters().map((item) => (
         <Dialog link={item.link} type="newsletter" client:idle>
-          {/* <Newsletter client:visible slot="content" data={item} /> */}
 
           <Picture
             slot="image"
@@ -183,24 +163,7 @@ const newsletters = () => {
       <div slot="content">
         <Auth client:visible />
       </div>
-      <!-- <Picture
-        slot="image"
-        src={contact.data.auth.thumbnail}
-        alt={`Auth`}
-        sizes="(max-width: 768px) calc(100vw - 4rem), (min-width: 1024px) 440px, calc(40vw - 4rem)"
-        aspect={4 / 5}
-        layout="fill"
-        loading="lazy"
-        artDirectives={[
-          {
-            media: "(max-width: 768px)",
-            aspect: 21 / 9,
-            layout: "constrained",
-            src: contact.data.auth.thumbnail,
-            breakpoints: [500, 601, 768, 820, 962],
-          },
-        ]}
-      /> -->
+      
     </Dialog>
   </body>
 </html>

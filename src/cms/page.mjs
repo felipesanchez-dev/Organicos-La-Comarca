@@ -134,6 +134,7 @@ export const page = {
               name: "thumbnail",
               widget: "image",
               media_folder: "/src/assets",
+              public_folder: "/src/assets",
               required: false,
             }, //, , 1, ,
             {
@@ -174,6 +175,7 @@ export const page = {
               name: "background_image",
               widget: "image",
               media_folder: "/src/assets",
+              public_folder: "/src/assets",
               required: false,
             },
             {

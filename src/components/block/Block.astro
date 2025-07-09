@@ -16,6 +16,7 @@ const { slot, ...props } = Astro.props;
   props.component !== "AnnoyingPopup" && (
     <Intersecting
       client:visible
+      noSsr={false}
       className={` ${props?.style?.surface || ""} ${
         props?.style?.block_class ? props.style.block_class : "py-8 sm:py-20"
       }`}

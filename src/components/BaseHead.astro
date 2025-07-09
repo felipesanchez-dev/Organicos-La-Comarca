@@ -16,27 +16,31 @@ interface Props {
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const { title, description, thumbnail } = Astro.props;
 
-let socialImage ;
+let socialImage;
 const pageTitle = `${title} | ${data.sitename}`;
 
-/* SOCIAL IMAGE */
-if(thumbnail) {
-
+if (thumbnail) {
   const allImages = import.meta.glob("/src/assets/*.{jpeg,jpg,png,gif}");
 
-  const imgObj = (await allImages[thumbnail]()).default;
-  
- 
-  socialImage = await getImage({
-    src: imgObj,
-    width: 1200,
-    height: 630,
-    format: "png",
-  });
+  let imageKey: string | undefined = thumbnail;
 
+  if (!allImages[thumbnail]) {
+    imageKey = Object.keys(allImages).find(
+      (key) => key.includes(thumbnail) || key.endsWith(thumbnail),
+    );
+  }
+
+  if (imageKey && allImages[imageKey]) {
+    const imgObj = ((await allImages[imageKey]()) as any).default;
+
+    socialImage = await getImage({
+      src: imgObj,
+      width: 1200,
+      height: 630,
+      format: "png",
+    });
+  }
 }
-
-
 ---
 
 <!-- Global Metadata -->
