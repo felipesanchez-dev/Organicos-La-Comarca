@@ -7,7 +7,8 @@ const { content, features, style } = Astro.props;
 
 <div
   class={`container-${style.container} fade-up rounded-md features grid gap-8`}
->
+id="features"
+  >
   {content && <div set:html={marked.parse(content)} class="richtext fade-up" />}
 
   {

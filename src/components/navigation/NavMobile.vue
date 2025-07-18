@@ -48,7 +48,7 @@
         v-show="show"
       >
         <a href="/" class="pt-10 items-center justify-start font-bold flex h-full">
-          ORGÁNICOS LA COMARCA
+          ORGÁNICOS LA COMARCA SAS BIC
         </a>
 
         <div class="mobile-links mt-3 w-full text-center" slot="links">
