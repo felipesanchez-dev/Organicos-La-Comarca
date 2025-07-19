@@ -16,36 +16,92 @@ let {
   layout = "fill",
 } = Astro.props;
 
-const allImages = import.meta.glob("/src/assets/*.{jpeg,jpg,png,gif}");
-const imgObj = (await allImages[src]()).default;
+// Verificar si es una URL externa o una imagen local
+const isExternalUrl = src.startsWith('http://') || src.startsWith('https://');
+
+let imgObj;
+
+if (isExternalUrl) {
+  // Para URLs externas, usar directamente la URL
+  imgObj = src;
+} else {
+  // Para imágenes locales, usar el sistema de importación
+  const allImages = import.meta.glob("/src/assets/*.{jpeg,jpg,png,gif}");
+  
+  const imageLoader = allImages[src];
+  if (!imageLoader || typeof imageLoader !== 'function') {
+    throw new Error(`Imagen no encontrada: ${src}. Verifica que la ruta sea correcta y que la imagen exista en /src/assets/`);
+  }
+
+  const imgModule = await imageLoader();
+  imgObj = (imgModule as any).default;
+}
+
 if (aspect) height = Math.round(width / aspect);
-const image = await getImage({
-  src: imgObj,
-  width: width,
-  height: height,
-  aspect: aspect,
-  format: imgObj.format,
-});
+let image;
+let sources: { format: string; srcset: string; }[] = [];
+let artdirection: { format: string; srcset: string; media: string; }[][] = [];
 
-const formats = ["webp"];
+if (isExternalUrl) {
+  // Para URLs externas, no podemos optimizar, usar imagen directamente
+  image = {
+    src: imgObj,
+    width: width,
+    height: height
+  };
+} else {
+  // Para imágenes locales, aplicar optimización
+  image = await getImage({
+    src: imgObj,
+    width: width,
+    height: height,
+    aspect: aspect,
+    format: imgObj.format,
+  });
 
-const sources = await Promise.all(
-  formats.map(async (format) => {
-    const image = await getImage({
-      src: imgObj,
-      format,
-      width,
-      height,
-      widths,
-      sizes,
-      aspect,
-    });
-    return {
-      format,
-      srcset: image.srcSet.attribute,
-    };
-  }),
-);
+  const formats = ["webp"];
+
+  sources = await Promise.all(
+    formats.map(async (format) => {
+      const image = await getImage({
+        src: imgObj,
+        format,
+        width,
+        height,
+        widths,
+        sizes,
+        aspect,
+      });
+      return {
+        format,
+        srcset: image.srcSet.attribute,
+      };
+    }),
+  );
+
+  artdirection = await Promise.all(
+    artDirectives.map(async (directive) => {
+      return await Promise.all(
+        formats.map(async (format) => {
+          const image = await getImage({
+            src: imgObj,
+            format,
+            width,
+            height,
+            aspect: directive.aspect,
+            widths: directive.breakpoints,
+          });
+
+          return {
+            format,
+            srcset: image.srcSet.attribute,
+            media: directive.media,
+          };
+        }),
+      );
+    }),
+  );
+}
 
 function imgClass() {
   if (layout === "fill") {
@@ -58,34 +114,11 @@ function imgClass() {
     return "w-full h-full object-contain";
   }
 }
-
-const artdirection = await Promise.all(
-  artDirectives.map(async (directive) => {
-    return await Promise.all(
-      formats.map(async (format) => {
-        const image = await getImage({
-          src: imgObj,
-          format,
-          width,
-          height,
-          aspect: directive.aspect,
-          widths: directive.breakpoints,
-        });
-
-        return {
-          format,
-          srcset: image.srcSet.attribute,
-          media: directive.media,
-        };
-      }),
-    );
-  }),
-);
 ---
 
 <picture {...attributes?.picture}>
   {
-    artdirection.map((directive) => (
+    !isExternalUrl && artdirection.map((directive) => (
       <>
         {directive.map((source) => (
           <source
@@ -99,7 +132,7 @@ const artdirection = await Promise.all(
     ))
   }
   {
-    sources.map((source) => (
+    !isExternalUrl && sources.map((source) => (
       <source
         type={`image/${source.format}`}
         srcset={source.srcset}
