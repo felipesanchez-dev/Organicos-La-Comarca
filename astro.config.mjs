@@ -26,8 +26,8 @@ const m2dxOptions = {
 // https://astro.build/config
 export default defineConfig({
   site: "https://felipesanchezdev.site",
-  output: "hybrid",
-  adapter: env.NETLIFY ? netlify(): vercel(),
+  output: "static",
+  // adapter: env.NETLIFY ? netlify(): vercel(), // Comentado para modo estático
   integrations: [
     icon(),
     mdx({}),
